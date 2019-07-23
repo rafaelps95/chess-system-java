@@ -24,7 +24,7 @@ public class Program {
 
 			try {
 				UI.clearScreen();
-
+								
 				UI.printMatch(chessMatch, captured);
 				System.out.println();
 				System.out.print("Source: ");
