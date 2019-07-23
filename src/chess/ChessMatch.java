@@ -17,8 +17,60 @@ public class ChessMatch {
 
 	public ChessMatch() {
 		board = new Board(8, 8);
+		
+		turn = 1;
+		currentPlayer = Color.WHITE;
 		initialSetup();
 	}
+	
+	
+
+	public int getTurn() {
+		return turn;
+	}
+
+
+	public boolean isCheck() {
+		return check;
+	}
+
+
+
+	public void setCheck(boolean check) {
+		this.check = check;
+	}
+
+
+
+	public ChessPiece getEnPassantVulnerable() {
+		return enPassantVulnerable;
+	}
+
+
+
+	public void setEnPassantVulnerable(ChessPiece enPassantVulnerable) {
+		this.enPassantVulnerable = enPassantVulnerable;
+	}
+
+
+
+	public ChessPiece getPromoted() {
+		return promoted;
+	}
+
+
+
+	public void setPromoted(ChessPiece promoted) {
+		this.promoted = promoted;
+	}
+
+
+
+	public Color getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+
 
 	public ChessPiece[][] getPieces() {
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
@@ -46,12 +98,17 @@ public class ChessMatch {
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target);
 		
+		nextTurn();
 		return (ChessPiece)capturedPiece;
 	}
 
 	private void validateSourcePosition(Position source) {
 		if (!board.thereIsAPiece(source)) {
 			throw new ChessException("There is no piece on source position");
+		}
+		
+		if (((ChessPiece)board.piece(source)).getColor() != currentPlayer) {
+			throw new ChessException("The chosen piece is not yours");
 		}
 		
 		if (!board.piece(source).isThereAnyPossibleMove())
@@ -62,6 +119,11 @@ public class ChessMatch {
 		if (!board.piece(source).possibleMove(target)) {
 			throw new ChessException("The chosen piece can't move to target position");
 		}
+	}
+	
+	private void nextTurn() {
+		turn++;
+		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
 	
 	private Piece makeMove(Position source, Position target) {
@@ -92,4 +154,13 @@ public class ChessMatch {
 		placeNewPiece('e', 8, new Rook(board, Color.BLACK));
 		placeNewPiece('d', 8, new King(board, Color.BLACK));
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "Turn: " + turn + "\nWaiting player=" + currentPlayer;
+	}
+	
+	
 }
